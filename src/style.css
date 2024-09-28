@@ -1,3 +1,21 @@
 body{
+    margin: 0;
+    padding: 0;
     background-color: lightseagreen;
+    display: flex;
+    flex-direction: column;
+}
+
+main{
+    width: 80vw;
+    margin: 0 auto;
+    /*display: grid;*/
+    /*grid-template-columns: 1fr;*/
+    /*justify-content: center;*/
+    /*align-content: center;*/
+}
+
+form{
+    display: grid;
+    justify-content: center;
 }

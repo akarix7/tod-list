@@ -4,12 +4,16 @@ const task = (() => {
     buildDom();
 
     function buildDom(){
-        buildFormDom();
+        //buildFormDom();
+        buildElement("main", "main");
+        buildElement("form", "task", "main");
         buildElement("input", "Title", "text");
         buildElement("input", "Due Date", "datetime-local");
         buildElement("input", "Description", "text");
         buildElement("input", "Notes", "text");
         buildElement("select", "Priority", "priority-label", "None", "Low", "Medium", "High");
+        buildElement("select", "Category", "category-label", "Default");
+        buildElement("input", "submit", "submit");
     }
     function buildFormDom(){
         const form = document.createElement("form");
@@ -51,6 +55,15 @@ const task = (() => {
             form.append(inputLabel);
             form.append(select);
 
+        }else{
+            const el = document.createElement(element);
+            el.id = label;
+            if(type){
+                const parent = document.getElementById(type);
+                parent.appendChild(el);
+                return;
+            }
+            document.body.append(el);
         }
     }
 
