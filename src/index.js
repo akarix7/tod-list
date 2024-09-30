@@ -1,6 +1,67 @@
 import "./style.css";
 
-const task = (() => {
+const Task = (() => {
+    let tasks = [];
+    function createTask(title, description, category, priority, notes){
+        //arguments.length === 1
+        if(category !== "default"){
+            Category.createCategory(category);
+        }
+
+        return {
+            title: title,
+            description: description,
+            category: category,
+            priority: priority,
+            notes: notes,
+        };
+    }
+
+    function addTask(task){
+        tasks.push(task);
+    }
+
+    function modifyTask(task){
+
+    }
+    function getTaskList(){
+        return tasks;
+    }
+
+    return {
+        createTask,
+        getTaskList
+    };
+})();
+
+const Category = (() => {
+    let categoryNames = ["default"];
+    let categories = [];
+
+    function addToCategory(name, tasks){
+        if(categoryNames.includes(name)){
+            let index = categoryNames.indexOf(name);
+            categories[index] = tasks;
+        }else{
+            createCategory(name);
+            categories[categories.length - 1] = tasks;
+        }
+    }
+    function createCategory(name){
+        categoryNames.push(name);
+    }
+    function displayCategories(){
+        categoryNames.forEach((c) => {
+            console.log(c);
+        })
+    }
+    return {
+        createCategory,
+        displayCategories
+    }
+})();
+
+const dom = (() => {
     buildDom();
 
     function buildDom(){
@@ -75,18 +136,9 @@ const task = (() => {
     });
 
 //do: checklist, category, due date
-    function createTask(title, description, priority, notes){
-        //arguments.length === 1
 
-        return {
-            title: title,
-            description: description,
-            priority: priority,
-            notes: notes
-        }
-    }
     return{
-        createTask:createTask
+        buildElement
     }
 })();
 
