@@ -1,64 +1,45 @@
 import "./style.css";
 
 const Task = (() => {
-    let tasks = [];
-    function createTask(title, description, category, priority, notes){
-        //arguments.length === 1
-        if(category !== "default"){
-            Category.createCategory(category);
-        }
+    let categories = new Map();
+    categories.set("default", {id: 0, tasks: []});
 
-        return {
+    function createTask(title, description, category, priority, notes){
+        let task = {
             title: title,
             description: description,
             category: category,
             priority: priority,
             notes: notes,
+        }
+
+        return {
+            task
         };
     }
-
-    function addTask(task){
-        tasks.push(task);
-    }
-
     function modifyTask(task){
 
     }
-    function getTaskList(){
-        return tasks;
+    function getCategories(){
+        categories.forEach((c) => {
+            console.log(c);
+        })
+    }
+    function addToCategory(categoryName, task){
+        if(!categories.has(categoryName)){
+            createNewCategory(categoryName);
+        }
+        categories.get(categoryName).tasks.push(task);
+    }
+    function createNewCategory(categoryName){
+        categories.set(categoryName, {id: categories.size, tasks: []});
     }
 
     return {
         createTask,
-        getTaskList
+        addToCategory,
+        getCategories
     };
-})();
-
-const Category = (() => {
-    let categoryNames = ["default"];
-    let categories = [];
-
-    function addToCategory(name, tasks){
-        if(categoryNames.includes(name)){
-            let index = categoryNames.indexOf(name);
-            categories[index] = tasks;
-        }else{
-            createCategory(name);
-            categories[categories.length - 1] = tasks;
-        }
-    }
-    function createCategory(name){
-        categoryNames.push(name);
-    }
-    function displayCategories(){
-        categoryNames.forEach((c) => {
-            console.log(c);
-        })
-    }
-    return {
-        createCategory,
-        displayCategories
-    }
 })();
 
 const dom = (() => {
@@ -141,5 +122,8 @@ const dom = (() => {
         buildElement
     }
 })();
+
+//let newTask = Task.createTask("Buy Milk", "", "Home", "Low", "");
+//Task.addToCategory(newTask.task.category)
 
 console.log("hello world!");
