@@ -1,8 +1,15 @@
 import "./style.css";
 
-const Task = (() => {
-    let categories = new Map();
-    categories.set("default", {id: 0, tasks: []});
+const TaskManager = (() => {
+    //let categories = new Map();
+    //categories.set("default", {id: 0, tasks: []});
+    let categories = {};
+    let priorities = {
+        none: [],
+        low: [],
+        medium: [],
+        high: []
+    };
 
     function createTask(title, description, category, priority, notes){
         let task = {
@@ -20,25 +27,45 @@ const Task = (() => {
     function modifyTask(task){
 
     }
-    function getCategories(){
-        categories.forEach((c) => {
-            console.log(c);
-        })
+    function addTaskToLists(task){
+        addToCategory(task.task.category, task);
+        addToPriority(task.task.priority, task);
+    }
+    function getCategory(categoryName){
+        return categories[categoryName];
+        //console.log(categories.get(category).tasks);
+    }
+    function getAllCategories(){
+        for(let c in categories){
+            console.log(c)
+        }
     }
     function addToCategory(categoryName, task){
-        if(!categories.has(categoryName)){
+        if(!categories[categoryName]) {
             createNewCategory(categoryName);
         }
-        categories.get(categoryName).tasks.push(task);
+        categories[categoryName].tasks.push(task);
+        // if(!categories.has(categoryName)){
+        //     createNewCategory(categoryName);
+        // }
+        // categories.get(categoryName).tasks.push(task);
     }
     function createNewCategory(categoryName){
-        categories.set(categoryName, {id: categories.size, tasks: []});
+        categories[categoryName] = {id: Object.keys(categories).length, tasks: []};
+    }
+    function addToPriority(priorityName, task){
+        priorities[priorityName].push(task);
+    }
+    function getPriority(priorityName){
+        return priorities[priorityName];
     }
 
     return {
         createTask,
-        addToCategory,
-        getCategories
+        addTaskToLists,
+        getCategory,
+        getAllCategories,
+        getPriority
     };
 })();
 
@@ -57,14 +84,14 @@ const dom = (() => {
         buildElement("select", "Category", "category-label", "Default");
         buildElement("input", "submit", "submit");
     }
-    function buildFormDom(){
-        const form = document.createElement("form");
-        form.id = "task";
-        document.body.append(form);
-        return{
-            form
-        }
-    }
+    // function buildFormDom(){
+    //     const form = document.createElement("form");
+    //     form.id = "task";
+    //     document.body.append(form);
+    //     return{
+    //         form
+    //     }
+    // }
     //input, title, text
     function buildElement(element, label, type, ...options){
         const form = document.getElementById("task");
@@ -108,13 +135,6 @@ const dom = (() => {
             document.body.append(el);
         }
     }
-
-    const setPriority = Object.freeze({
-        None: 0,
-        Low: 1,
-        Medium: 2,
-        High: 3
-    });
 
 //do: checklist, category, due date
 
