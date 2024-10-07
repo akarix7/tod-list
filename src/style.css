@@ -1,7 +1,26 @@
-body{
+*{
     margin: 0;
     padding: 0;
-    background-color: lightseagreen;
+}
+
+:root{
+    --main-color: #69BDAD;
+    --form: #A09CC8;
+    --form-outline: rgba(174, 169, 223, 0.3);
+    --form-darker: #837FAC;
+    --complement: #DFD3AC;
+    --lighter-complement: #EEE6CC;
+    --background: #9EDCDB;
+    --container: #F8F8F0;
+    --headings: #5FA0D7;
+    --white: #ffffff;
+    --button: #19C8B9;
+    --button-complement: #2DACA1;
+}
+
+body{
+    background-color: var(--background);
+    font-family: "Arial Rounded MT Bold", sans-serif;
     display: flex;
     flex-direction: column;
 }
@@ -18,4 +37,19 @@ main{
 form{
     display: grid;
     justify-content: center;
+}
+
+#task-container{
+    display: grid;
+    justify-content: center;
+    margin: 5px;
+    background-color: var(--container);
+}
+
+#task-container h2 {
+    text-align: center;
+    background-color: var(--headings);
+    border-radius: 20px;
+    color: var(--white);
+    padding: 5px;
 }

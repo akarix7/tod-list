@@ -59,17 +59,21 @@ const TaskManager = (() => {
     function getPriority(priorityName){
         return priorities[priorityName];
     }
+    function isEmpty(){
+        return Object.keys(categories).length === 0;
+    }
 
     return {
         createTask,
         addTaskToLists,
         getCategory,
         getAllCategories,
-        getPriority
+        getPriority,
+        isEmpty
     };
 })();
 
-const dom = (() => {
+const DOMManager = (() => {
     buildDom();
 
     function buildDom(){
@@ -77,7 +81,7 @@ const dom = (() => {
         buildElement("main", "main");
         buildElement("form", "task", "main");
         buildElement("input", "Title", "text");
-        buildElement("input", "Due Date", "datetime-local");
+        buildElement("input", "Due", "datetime-local");
         buildElement("input", "Description", "text");
         buildElement("input", "Notes", "text");
         buildElement("select", "Priority", "priority-label", "None", "Low", "Medium", "High");
@@ -98,6 +102,7 @@ const dom = (() => {
 
         if(element === "input") {
             const input = document.createElement(element);
+            input.id = `${label.toLowerCase()}-id`;
             input.setAttribute("type", type);
 
             const inputLabel = document.createElement("label");
@@ -106,6 +111,7 @@ const dom = (() => {
 
             form.append(inputLabel);
             form.append(input);
+            return input;
         }else if (element === "select"){
             const select = document.createElement(element);
             select.setAttribute("id", type);
@@ -123,23 +129,74 @@ const dom = (() => {
 
             form.append(inputLabel);
             form.append(select);
-
+            return select;
         }else{
             const el = document.createElement(element);
             el.id = label;
             if(type){
                 const parent = document.getElementById(type);
                 parent.appendChild(el);
-                return;
+                return el;
             }
             document.body.append(el);
+            return el;
         }
+    }
+    function buildTaskContainer(){
+        let taskContainer = buildElement("div", "task-container", "main");
+        if(TaskManager.isEmpty()){
+            taskContainer.textContent = "No tasks today! Go take a break";
+        }
+    }
+    function clearTaskContainer(){
+        let taskContainer = document.getElementById("task-container");
+        taskContainer.textContent = "";
+    }
+    function buildTask(task){
+        clearTaskContainer();
+        let category = buildElement("h2", "category-h2", "task-container");
+        let taskTitle = buildElement("h3", "task-h3", "task-container");
+        //category.textContent = `${TaskManager.getCategory(task.task.category).toString()}`;
+        category.textContent = task.task.category;
+        taskTitle.textContent = task.task.title;
+
+        if(task.task.description !== "" || task.task.notes !== ""){
+            let description = buildElement("p", "desc-p", "task-container");
+            let notes = buildElement("p", "notes-p", "task-container");
+            description.textContent = task.task.description;
+            notes.textContent = task.task.notes;
+        }
+    }
+    function getForm(){
+        return document.getElementById("task");
     }
 
 //do: checklist, category, due date
 
     return{
-        buildElement
+        getForm,
+        buildTask,
+        buildTaskArea: buildTaskContainer
+    }
+})();
+
+const DataManager = (() => {
+    submitForm();
+    DOMManager.buildTaskArea();
+
+    function submitForm(){
+        let form = DOMManager.getForm();
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            let task = TaskManager.createTask(form.elements["title-id"].value, form.elements["description-id"].value,
+                form.elements["category-label"].value, form.elements["priority-label"].value.toLowerCase(), form.elements["notes-id"].value);
+            TaskManager.addTaskToLists(task);
+            DOMManager.buildTask(task);
+            console.log(task);
+        })
+    }
+    return {
+        submitForm
     }
 })();
 
